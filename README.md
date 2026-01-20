@@ -1,32 +1,30 @@
 # 🌍 BookMyStay - Premium Hotel Booking Platform
 
-A modern, full-stack hotel booking website built with React, Node.js, Express, and MongoDB. Features a beautiful UI, secure authentication, real-time booking system, and comprehensive hotel management.
+A modern hotel booking web application built with vanilla JavaScript, Node.js, Express, and MongoDB. Features a clean UI, secure authentication, real-time booking system, and comprehensive hotel management.
 
 ![BookMyStay](https://img.shields.io/badge/BookMyStay-Hotel%20Booking-blue)
-![React](https://img.shields.io/badge/React-18.2.0-61DAFB)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-green)
-![MongoDB](https://img.shields.io/badge/MongoDB-9.0.1-47A248)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
 
 ---
 
 ## ✨ Features
 
-### Frontend
-- 🎨 **Modern React UI** - Beautiful, responsive design with smooth animations
-- 🔍 **Advanced Search** - Search hotels by city, filter by price and rating
-- 📱 **Fully Responsive** - Works perfectly on desktop, tablet, and mobile
-- 🔐 **User Authentication** - Secure login and registration with JWT
-- 💳 **Booking System** - Complete booking flow with offer codes
-- 📊 **User Dashboard** - View and manage all bookings
-- ⚡ **Fast Performance** - Built with Vite for lightning-fast development
+### 🎨 Frontend
+- **Modern Vanilla JavaScript** - Fast, lightweight, no framework overhead
+- **Responsive Design** - Works seamlessly across desktop, tablet, and mobile
+- **Interactive UI** - Smooth transitions and user-friendly interfaces
+- **Multi-page Application** - Dedicated pages for bookings, hotels, listings, and feedback
+- **Custom Styling** - Professional CSS with modern design patterns
 
-### Backend
-- 🚀 **RESTful API** - Clean, well-structured API endpoints
-- 🔒 **JWT Authentication** - Secure token-based authentication
-- 💾 **MongoDB Database** - Scalable NoSQL database
-- 🎫 **Offer System** - Discount codes and promotional offers
-- 📝 **Booking Management** - Complete booking lifecycle
-- 🧮 **Bill Calculation** - Automatic tax and discount calculations
+### 🚀 Backend
+- **RESTful API** - Clean, scalable API architecture
+- **JWT Authentication** - Secure token-based user authentication
+- **MongoDB Integration** - NoSQL database for flexible data management
+- **Booking Management** - Complete booking lifecycle handling
+- **Offer System** - Promotional codes and discount management
+- **Auto Bill Calculation** - Taxes, service fees, and discounts
 
 ---
 
@@ -34,27 +32,26 @@ A modern, full-stack hotel booking website built with React, Node.js, Express, a
 
 ```
 BookMyStay/
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # Reusable React components
-│   │   ├── pages/           # Page components
-│   │   ├── utils/           # API utilities
-│   │   ├── App.jsx          # Main app component
-│   │   └── main.jsx         # Entry point
-│   ├── package.json
-│   └── vite.config.js
-│
 ├── backend/
-│   ├── models/              # MongoDB models
-│   ├── routes/              # API routes
-│   ├── controllers/         # Business logic
-│   ├── middleware/          # Auth middleware
-│   ├── utils/               # Utility functions
-│   ├── server.js            # Express server
-│   ├── seedData.js          # Database seeding
-│   └── package.json
+│   ├── node_modules/        # Dependencies
+│   ├── .env                 # Environment variables
+│   ├── .gitignore          # Git ignore rules
+│   ├── package-lock.json   # Dependency lock file
+│   ├── package.json        # Backend dependencies
+│   ├── README.md           # Backend documentation
+│   └── server.js           # Express server entry point
 │
-└── README.md
+├── frontend/
+│   ├── booking.html        # Booking page
+│   ├── feedback.html       # User feedback page
+│   ├── hotel.html          # Hotel details page
+│   ├── index.html          # Landing page
+│   ├── listings.html       # Hotels listing page
+│   ├── login.html          # Login/Register page
+│   ├── README.md           # Frontend documentation
+│   └── style.css           # Global styles
+│
+└── README.md              # Main project documentation
 ```
 
 ---
@@ -63,161 +60,237 @@ BookMyStay/
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
-- MongoDB (local or Atlas)
-- npm or yarn
+- **Node.js** (v16 or higher)
+- **MongoDB** (local installation or MongoDB Atlas account)
+- **npm** (comes with Node.js)
 
 ### Installation
 
-#### 1. Clone the Repository
+#### 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/BookMyStay.git
 cd BookMyStay
 ```
 
-#### 2. Backend Setup
+#### 2️⃣ Backend Setup
 
 ```bash
 cd backend
 npm install
+```
 
-# Create .env file
-cp .env.example .env
+Create a `.env` file in the `backend` directory:
 
-# Edit .env and add your MongoDB connection string
-# MONGO_URI=mongodb://localhost:27017/bookmystay
+```env
+MONGO_URI=mongodb://localhost:27017/bookmystay
 # Or use MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/bookmystay
 
-# Seed the database with sample data
-npm run seed
+JWT_SECRET=your-super-secret-jwt-key-change-this
+PORT=5000
+TAX_PERCENTAGE=18
+SERVICE_FEE_PERCENTAGE=5
+```
 
-# Start the backend server
+Seed the database (if seed script exists):
+
+```bash
+npm run seed
+```
+
+Start the backend server:
+
+```bash
+npm start
+# or for development with auto-reload
 npm run dev
 ```
 
-The backend will run on `http://localhost:5000`
+✅ Backend will run on `http://localhost:5000`
 
-#### 3. Frontend Setup
+#### 3️⃣ Frontend Setup
 
 ```bash
 cd frontend
-npm install
-
-# Start the development server
-npm run dev
 ```
 
-The frontend will run on `http://localhost:3000`
+Open `index.html` in your browser or use a local server:
+
+**Option 1: Using Live Server (VS Code)**
+- Install the Live Server extension
+- Right-click on `index.html` → Open with Live Server
+
+**Option 2: Using Python**
+```bash
+python -m http.server 3000
+```
+
+**Option 3: Using Node.js http-server**
+```bash
+npx http-server -p 3000
+```
+
+✅ Frontend will run on `http://localhost:3000`
 
 ---
 
 ## 📡 API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
+### 🔐 Authentication
+```
+POST   /api/auth/register    # Register new user
+POST   /api/auth/login       # Login user
+GET    /api/auth/profile     # Get user profile (requires auth)
+```
 
-### Hotels
-- `GET /api/hotels` - Get all hotels
-- `GET /api/hotels/:id` - Get hotel by ID
-- `GET /api/hotels/search?q=city` - Search hotels
+### 🏨 Hotels
+```
+GET    /api/hotels           # Get all hotels
+GET    /api/hotels/:id       # Get hotel by ID
+GET    /api/hotels/search    # Search hotels by city
+```
 
-### Bookings
-- `POST /api/bookings` - Create booking (requires auth)
-- `GET /api/bookings` - Get user bookings (requires auth)
-- `GET /api/bookings/:id` - Get booking by ID (requires auth)
+### 📅 Bookings
+```
+POST   /api/bookings         # Create new booking (requires auth)
+GET    /api/bookings         # Get user bookings (requires auth)
+GET    /api/bookings/:id     # Get booking by ID (requires auth)
+PUT    /api/bookings/:id     # Update booking (requires auth)
+DELETE /api/bookings/:id     # Cancel booking (requires auth)
+```
 
-### Offers
-- `POST /api/offers/validate` - Validate offer code
+### 🎫 Offers
+```
+POST   /api/offers/validate  # Validate offer code
+GET    /api/offers           # Get active offers
+```
+
+### 💬 Feedback
+```
+POST   /api/feedback         # Submit feedback (requires auth)
+GET    /api/feedback         # Get all feedback (admin only)
+```
 
 ---
 
-## 🎨 Key Features Explained
+## 🎯 Key Features Explained
 
-### 1. Hotel Search & Filtering
-- Search by city name
-- Filter by price range (slider)
-- Filter by minimum rating
-- Sort by price (low to high, high to low) or rating
+### 1. User Authentication
+- Secure registration and login with JWT tokens
+- Password encryption using bcrypt
+- Protected routes requiring authentication
+- Session management
 
-### 2. Booking System
+### 2. Hotel Browsing
+- Browse all available hotels on listings page
+- View detailed hotel information
+- See pricing, amenities, and ratings
+- Responsive image galleries
+
+### 3. Booking System
 - Select check-in and check-out dates
-- Choose number of guests and rooms
-- Apply offer codes for discounts
-- Automatic bill calculation with taxes
-- Secure booking confirmation
+- Choose number of rooms and guests
+- Enter guest details
+- Apply promotional offer codes
+- Real-time price calculation
+- Booking confirmation
 
-### 3. User Dashboard
-- View all bookings
-- See booking status (Pending/Confirmed)
-- Track booking details and amounts
+### 4. User Dashboard
+- View all bookings in one place
+- Check booking status
+- Access booking details
+- Manage reservations
 
-### 4. Offer Codes
-- Apply discount codes during booking
-- Percentage or fixed amount discounts
-- Automatic validation and application
+### 5. Feedback System
+- Submit reviews and feedback
+- Rate your experience
+- Help improve the platform
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 18** - UI library
-- **React Router** - Navigation
-- **Vite** - Build tool
-- **CSS3** - Styling with custom properties
+- **HTML5** - Semantic markup
+- **CSS3** - Modern styling with custom properties
+- **JavaScript (ES6+)** - Dynamic functionality
+- **Fetch API** - HTTP requests
 
 ### Backend
-- **Node.js** - Runtime environment
-- **Express** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM
-- **JWT** - Authentication
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB ODM
+- **JWT** - Authentication tokens
 - **bcryptjs** - Password hashing
+- **dotenv** - Environment configuration
 
 ---
 
-## 📝 Environment Variables
+## 🔒 Environment Variables
 
 Create a `.env` file in the `backend` directory:
 
 ```env
+# Database
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your-secret-key
+
+# Authentication
+JWT_SECRET=your_jwt_secret_key
+
+# Server
 PORT=5000
+NODE_ENV=development
+
+# Billing
 TAX_PERCENTAGE=18
 SERVICE_FEE_PERCENTAGE=5
 ```
 
 ---
 
-## 🎯 Usage Examples
+## 📝 API Request Examples
 
 ### Register a New User
 ```javascript
 POST /api/auth/register
+Content-Type: application/json
+
 {
   "name": "John Doe",
   "email": "john@example.com",
-  "password": "password123"
+  "password": "securePassword123",
+  "phone": "+1234567890"
 }
 ```
 
-### Create a Booking
+### Login
+```javascript
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "securePassword123"
+}
+```
+
+### Create Booking
 ```javascript
 POST /api/bookings
-Headers: { Authorization: "Bearer <token>" }
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
 {
   "hotelId": "hotel_id_here",
-  "checkInDate": "2024-01-15",
-  "checkOutDate": "2024-01-18",
+  "checkInDate": "2024-02-15",
+  "checkOutDate": "2024-02-18",
   "numberOfRooms": 1,
   "numberOfGuests": 2,
   "guestDetails": {
     "name": "John Doe",
     "email": "john@example.com",
-    "phone": "1234567890"
+    "phone": "+1234567890"
   },
   "offerCode": "WELCOME20"
 }
@@ -225,35 +298,48 @@ Headers: { Authorization: "Bearer <token>" }
 
 ---
 
-## 🎨 UI/UX Highlights
+## 🎨 Page Structure
 
-- **Modern Design** - Clean, professional interface
-- **Smooth Animations** - Fade-in, slide-up effects
-- **Responsive Layout** - Mobile-first approach
-- **Intuitive Navigation** - Easy-to-use interface
-- **Loading States** - Spinner animations
-- **Toast Notifications** - User feedback
-- **Color Scheme** - Professional cyan and gold accents
+### 🏠 index.html
+Landing page with hero section, featured hotels, and call-to-action
+
+### 🔍 listings.html
+Complete hotel listings with search and filter capabilities
+
+### 🏨 hotel.html
+Detailed hotel view with amenities, images, and booking button
+
+### 📅 booking.html
+Booking form with date selection, guest details, and payment
+
+### 💬 feedback.html
+User feedback and review submission form
+
+### 🔐 login.html
+User authentication (login/register)
 
 ---
 
 ## 🔮 Future Enhancements
 
-- [ ] Payment gateway integration (Stripe/PayPal)
-- [ ] Email notifications
-- [ ] Hotel reviews and ratings
-- [ ] Image galleries
-- [ ] Map integration
-- [ ] Admin dashboard
+- [ ] Payment gateway integration (Stripe/Razorpay)
+- [ ] Email notifications for bookings
+- [ ] User reviews and ratings system
+- [ ] Hotel image galleries
+- [ ] Interactive maps integration
+- [ ] Admin dashboard for hotel management
 - [ ] Multi-language support
-- [ ] Real-time availability
-- [ ] Wishlist functionality
+- [ ] Real-time room availability
+- [ ] Wishlist and favorites
+- [ ] Advanced search filters
+- [ ] Social media authentication
+- [ ] Mobile app (React Native)
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -269,24 +355,37 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
+## 🐛 Bug Reports
+
+If you discover any bugs, please create an issue on GitHub with:
+- Bug description
+- Steps to reproduce
+- Expected behavior
+- Screenshots (if applicable)
+
+---
+
+
 ## 👨‍💻 Author
 
-Built with ❤️ for travelers around the world
+**Your Name**
+- GitHub: [@Anvesha-Khandelwal](https://github.com/Anvesha-Khandelwal)
+- LinkedIn: [Anvesha-Khandelwal](in/anvesha-khandelwal-115778320)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- React team for the amazing framework
-- MongoDB for the database solution
-- All the open-source contributors
+- MongoDB team for the excellent database solution
+- Express.js community for the robust framework
+- All contributors and testers
 
 ---
 
 ## ⭐ Show Your Support
 
-If you find this project useful, please give it a star! ⭐
+If you find this project helpful, please give it a star! ⭐
 
 ---
 
-**Made with ❤️ for travelers around the world**
+**Built with ❤️ for travelers worldwide** | © 2024 BookMyStay. All rights reserved.
