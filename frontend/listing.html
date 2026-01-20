@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listings - BookMyStay</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+
+<style>
+:root{
+  --bg:#faf7f3;
+  --card:#ffffff;
+  --card-hover:#f5ece1;
+  --text:#2d3430;
+  --sub:#707b72;
+  --accent:#567f63;
+  --price:#567f63;
+  --radius:20px;
+  --radius-sm:14px;
+  --shadow:0 4px 16px rgba(0,0,0,0.05);
+  --shadow-hover:0 10px 26px rgba(0,0,0,0.12);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:"Poppins",sans-serif;color:var(--text);}
+
+.search-wrapper{
+  display:flex;gap:0.8rem;margin:1.8rem auto 0.8rem;max-width:720px;padding:0 1.2rem;
+}
+.search-input{
+  flex:1;padding:0.9rem 1rem;border-radius:var(--radius-sm);border:1.5px solid rgba(0,0,0,0.08);
+  background:#fff;color:var(--text);font-size:0.95rem;font-weight:600;outline:none;
+  box-shadow:0 3px 10px rgba(0,0,0,0.02);
+}
+.search-input::placeholder{color:#9fa7a0;}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(86,127,99,0.18);}
+
+.search-btn{
+  padding:0.9rem 1.5rem;background:var(--accent);border:none;border-radius:var(--radius-sm);
+  color:#fff;font-weight:800;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px;
+  cursor:pointer;transition:0.25s;box-shadow:0 4px 12px rgba(86,127,99,0.22);
+}
+.search-btn:hover{opacity:0.9;transform:translateY(-2px);box-shadow:var(--shadow-hover);}
+
+.card{
+  background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(0,0,0,0.04);
+  box-shadow:var(--shadow);cursor:pointer;transition:0.3s;animation:popUp 0.4s ease;
+}
+.card:hover{transform:translateY(-5px);background:var(--card-hover);box-shadow:var(--shadow-hover);}
+.card img{width:100%;height:220px;object-fit:cover;display:block;border-radius:12px 12px 0 0;}
+.card-body{padding:1.2rem 1.4rem 1.4rem;}
+.card-body h3{font-size:1.3rem;font-weight:700;color:#1a1a1a;margin-bottom:0.8rem;}
+.muted{font-size:0.85rem;color:var(--sub);margin-bottom:0.4rem;}
+.price{font-size:1.5rem;font-weight:800;color:var(--price);}
+
+@keyframes popUp {
+  from {opacity:0;transform:scale(0.92);}
+  to {opacity:1;transform:scale(1);}
+}
+
+.quick-filters{
+  max-width:720px;margin:0 auto 0.6rem;padding:0 1.2rem;display:flex;flex-wrap:wrap;gap:0.5rem;
+}
+.chip{
+  padding:0.4rem 0.9rem;border-radius:999px;border:1px solid rgba(0,0,0,0.08);
+  background:#fff;font-size:0.78rem;font-weight:600;color:var(--sub);cursor:pointer;transition:0.2s;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:#f2f6f2;}
+
+.filters-container{
+  display:flex;flex-wrap:wrap;gap:0.9rem;justify-content:center;padding:0.6rem 1rem;
+}
+.filters-container select, .filters-container input[type=range]{
+  padding:0.6rem 0.9rem;border-radius:var(--radius-sm);border:1.5px solid rgba(0,0,0,0.08);
+  background:#fff;color:var(--text);font-weight:600;outline:none;box-shadow:0 2px 6px rgba(0,0,0,0.02);
+  font-size:0.85rem;
+}
+
+.clear-btn{
+  padding:0.6rem 1rem;border-radius:var(--radius-sm);border:1.5px solid rgba(0,0,0,0.08);
+  background:#fff;color:var(--sub);font-size:0.78rem;font-weight:700;cursor:pointer;transition:0.2s;
+}
+.clear-btn:hover{border-color:var(--accent);color:var(--accent);background:#f2f6f2;}
+
+#resultsInfo{text-align:center;font-size:0.9rem;font-weight:600;color:var(--sub);margin:0.4rem 0;}
+</style>
+
+</head>
+<body>
+
+<div class="search-wrapper">
+  <input type="text" id="searchCityInput" placeholder="Search city..." class="search-input">
+  <button onclick="filterByCity(document.getElementById('searchCityInput').value)" class="search-btn">Search</button>
+</div>
+
+<div id="hotelCards" class="cards-grid" style="grid-template-columns:repeat(auto-fill,minmax(350px,1fr));"></div>
+
+<div id="resultsInfo">Found hotels</div>
+
+<script>
+
+const hotels = [
+  {id:1,name:"Waves Resort",city:"Goa",location:"Baga, Goa, India",price:3400,rating:4.6,reviews:212,
+  image:"https://i.pinimg.com/736x/47/2a/dd/472add28786aa328599861a37a1371ab.jpg",
+  description:"Beachside luxury",
+  amenities:["WiFi","Gym","Pool","Restaurant","Parking"],
+  attractions:["Baga Beach - 5 min","Market - 2 min"],
+  gallery: [
+  "https://images.unsplash.com/photo-1582719508461?auto=format&fit=crop&w=800&q=80", // room
+  "https://images.unsplash.com/photo-1534438327276?auto=format&fit=crop&w=800&q=80", // gym
+  "https://images.unsplash.com/photo-1571896349842?auto=format&fit=crop&w=800&q=80"  // pool
+]},
+
+  {id:2,name:"Palm Lagoon",city:"Maldives",location:"Maldives",price:9800,rating:4.9,reviews:390,
+  image:"https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&h=600&fit=crop",
+  description:"Over-water villas",
+  amenities:["WiFi","Diving","Private Villa","Chef","Spa"],
+  attractions:["Reef Diving - 3 min","Island Tour"],
+ gallery: [
+  "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb", // villa
+  "https://images.unsplash.com/photo-1602002418082-a4443e8f3f2b", // dining
+  "https://images.unsplash.com/photo-1584132967334-10e028bd69f7"  // ocean
+]
+},
+
+  {id:3,name:"Metro Stay",city:"Delhi",location:"Connaught Place, Delhi, India",price:4100,rating:4.1,reviews:148,
+  image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop",
+  description:"City center hotel",
+  amenities:["WiFi","Gym","Cafe","Lift"],
+  attractions:["India Gate - 12 min","Metro - 1 min"],
+  gallery: [
+  "https://images.unsplash.com/photo-1582719508461-905c673771fd", // room
+  "https://images.unsplash.com/photo-1534438327276-14e5300c3a48", // gym
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945"  // restaurant
+]},
+
+  {id:4,name:"IT Hub Hotel",city:"Bangalore",location:"Bangalore, Karnataka, India",price:3200,rating:4.0,reviews:98,
+  image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop",
+  description:"Near tech parks",
+  amenities:["WiFi","Work lounge","UPI Payment"],
+  attractions:["Tech Park - 6 min","Mall - 10 min"],
+  gallery: [
+  "https://images.unsplash.com/photo-1582719508461?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1534438327276?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1500530855697?auto=format&fit=crop&w=800&q=80"
+]},
+
+  {id:5,name:"Snow Cliff Resort",city:"Manali",location:"Manali, HP, India",price:5200,rating:4.7,reviews:221,
+  image:"https://i.pinimg.com/474x/46/66/08/466608a3aa916fa77753b4ce9cc91d92.jpg",
+  description:"Heated rooms + snow views",
+  amenities:["WiFi","Heater","Gym","Dining"],
+  attractions:["Valley - 8 min","Club - 15 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-room?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1571896349842-snow?w=800&h=600&fit=crop"
+  ]},
+
+  {id:6,name:"Lotus Pool Hotel",city:"Jaipur",location:"Jaipur, RJ, India",price:4600,rating:4.5,reviews:167,
+  image:"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&h=600&fit=crop",
+  description:"Rooftop pool + gym",
+  amenities:["WiFi","Gym","Pool","Rooftop"],
+  attractions:["Hawa Mahal - 14 min","Market - 3 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-room2?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48-roomgym?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1501114676298-rooftop?w=800&h=600&fit=crop"
+  ]},
+
+  {id:7,name:"Green Valley",city:"Coorg",location:"Coorg, Karnataka, India",price:2900,rating:4.2,reviews:76,
+  image:"https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&h=600&fit=crop",
+  description:"Jungle + hill view",
+  amenities:["WiFi","Meals","Campfire"],
+  attractions:["Falls - 18 min","Trek - 4 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1602002418082-roomcozy?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym3?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1571896349842-green?w=800&h=600&fit=crop"
+  ]},
+
+  {id:8,name:"Hills Heaven",city:"Shimla",location:"Shimla, India",price:6100,rating:4.6,reviews:250,
+  image:"https://i.pinimg.com/1200x/ef/bd/8b/efbd8bb177295ec6d7e98f24b2ff1cfd.jpg",
+  description:"Luxury hill stay",
+  amenities:["Gym","Pool","WiFi"],
+  attractions:["Mall Road - 6 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-room3?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym4?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1500530855697-pool2?w=800&h=600&fit=crop"
+  ]},
+
+  {id:9,name:"Lake Palace Inn",city:"Udaipur",location:"Udaipur, India",price:7800,rating:4.8,reviews:460,
+  image:"https://i.pinimg.com/1200x/fb/5e/d4/fb5ed42def009168081b2776b7708228.jpg",
+  description:"Palace style lake view",
+  amenities:["Boating","WiFi","Pool"],
+  attractions:["Lake Pichola - 2 min","City Palace - 10 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1566073771259-roomlake1?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1501114676298-gymudaipur?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1500530855697-pool3?w=800&h=600&fit=crop"
+  ]},
+
+  {id:10,name:"Forest View Resort",city:"Wayanad",location:"Wayanad, KL, India",price:5600,rating:4.4,reviews:201,
+  image:"https://i.pinimg.com/736x/0c/7e/ad/0c7ead084e7fb5195ee3a88f4241a5e8.jpg",
+  description:"Forest rooms + gym",
+  amenities:["Gym","WiFi","Meals"],
+  attractions:["Bridge - 20 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-room4?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym5?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1571896349842-forest?w=800&h=600&fit=crop"
+  ]},
+
+  {id:11,name:"Beach Town Hostel",city:"Goa",location:"Anjuna, Goa, India",price:1400,rating:4.0,reviews:89,
+  image:"https://i.pinimg.com/1200x/65/18/1b/65181b447f5a34236077c5269a575410.jpg",
+  description:"Backpacker hostel",
+  amenities:["WiFi","Rooftop"],
+  attractions:["Anjuna Beach - 6 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1556740749-hostelroom?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-hostelgym?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1501114676298-roofhostel?w=800&h=600&fit=crop"
+  ]},
+
+  {id:12,name:"Global Tower Hotel",city:"Dubai",location:"Dubai Marina, UAE",price:8600,rating:4.7,reviews:447,
+  image:"https://i.pinimg.com/1200x/72/98/2e/72982e78d42d6e9c0f40855906bb191d.jpg",
+  description:"Marina facing rooms + gym",
+  amenities:["WiFi","Pool","Gym"],
+  attractions:["Marina Walk - 2 min","Palm Jumeirah - 17 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-room5?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym6?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1500530855697-pool4?w=800&h=600&fit=crop"
+  ]},
+
+  {id:13,name:"Crystal Rooms",city:"Maldives",location:"Malé, Maldives",price:9200,rating:4.5,reviews:190,
+  image:"https://i.pinimg.com/736x/15/d8/d7/15d8d76fc16a88ef75861f41fb2e8ab5.jpg",
+  description:"Lagoon view rooms + indoor gym",
+  amenities:["WiFi","Gym","Meals"],
+  attractions:["City Tour"],
+  gallery:[
+    "https://images.unsplash.com/photo-1566073771259-room6?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym7?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1590490360182-seamal?w=800&h=600&fit=crop"
+  ]},
+
+  {id:14,name:"City Capsule Stay",city:"Tokyo",location:"Tokyo, Japan",price:4900,rating:3.9,reviews:120,
+  image:"https://i.pinimg.com/736x/c1/03/8c/c1038cd7ccde8acb59b66a405c1f853e.jpg",
+  description:"Pocket capsule rooms",
+  amenities:["WiFi","Private capsule"],
+  attractions:["Shibuya - 10 min","Akihabara - 6 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-capsuleinside?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gymcapsule?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1501114676298-capsulecity?w=800&h=600&fit=crop"
+  ]},
+
+  {id:15,name:"Agra Deluxe",city:"Agra",location:"Agra, UP, India",price:6700,rating:4.3,reviews:287,
+  image:"https://i.pinimg.com/1200x/17/45/87/174587d5cf88118dd698e73dc010f2bc.jpg",
+  description:"Comfort rooms + big gym",
+  amenities:["Gym","WiFi","Dining"],
+  attractions:["Taj Mahal - 8 min","Fort - 12 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-room7?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym8?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1500530855697-pool5?w=800&h=600&fit=crop"
+  ]},
+
+  {id:16,name:"Kerala House Retreat",city:"Alleppey",location:"Alleppey, KL, India",price:5500,rating:4.7,reviews:430,
+  image:"https://i.pinimg.com/1200x/24/22/6e/24226e052913bd96731b398bffaba58b.jpg",
+  description:"House style stay + gym views",
+  amenities:["WiFi","Meals","Gym"],
+  attractions:["Backwaters - 1 min"],
+  gallery:[
+    "https://images.unsplash.com/photo-1542314831-room8?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1534438327276-gym9?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1582719478250-backwaters?w=800&h=600&fit=crop"
+  ]}
+ // Just add this new hotel at the end of your hotels array
+// {
+//   id:17,
+//   name:"Beach Paradise Hotel",
+//   city:"Phuket",
+//   location:"Phuket, Thailand",
+//   price:8900,
+//   rating:4.8,
+//   reviews:385,
+//   image:"https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800",
+//   description:"Beautiful beach hotel",
+//   amenities:["WiFi","Pool","Gym"],
+//   attractions:["Beach - 5 min","Market - 10 min"],
+//   gallery:["image1.jpg","image2.jpg"]
+// }
+];
+
+let currentHotels = [...hotels];
+
+function displayHotels(){
+  const box=document.getElementById("hotelCards");
+  box.innerHTML="";
+  currentHotels.forEach(h=>{
+    const c=document.createElement("div");
+    c.className="card";
+    c.onclick=()=>openHotelDetails(h);
+    c.innerHTML=`
+      <img src="${h.image}" alt="${h.name}">
+      <div class="card-body">
+        <h3>${h.name}</h3>
+        <p class="muted"><i class="fas fa-map-marker-alt"></i> ${h.location}</p>
+        <div><span class="badge">${h.city}</span></div>
+        <div class="price">₹${h.price.toLocaleString()}/night</div>
+      </div>`;
+    box.appendChild(c);
+  });
+  document.getElementById("resultsInfo").textContent=`Found ${currentHotels.length} hotels`;
+}
+
+function openHotelDetails(h){
+  localStorage.setItem("selectedHotel",JSON.stringify(h));
+  window.location.href="hotel.html";
+}
+
+function filterByCity(c){
+ currentHotels = hotels.filter(h=>h.city.toLowerCase().includes(city.toLowerCase()));
+
+}
+
+function filterByPrice(m){ currentHotels=hotels.filter(h=>h.price<=m); displayHotels(); }
+function sortHotels(t){ if(!t)return; currentHotels.sort((a,b)=> t==="price-low"?a.price-b.price:t==="price-high"?b.price-a.price:b.rating-a.rating); displayHotels(); }
+function clearFilters(){ document.getElementById("searchCityInput").value="";currentHotels=[...hotels];displayHotels(); }
+
+document.addEventListener("DOMContentLoaded",displayHotels);
+
+document.getElementById("saveBookingBtn").addEventListener("click", () => {
+  const checkin  = document.getElementById("checkinInput").value;
+  const checkout = document.getElementById("checkoutInput").value;
+  const rooms    = document.getElementById("roomInput").value;   // e.g. "1 Room"
+  const guests   = document.getElementById("guestInput").value;  // e.g. "2 Adults"
+
+  const data = { checkin, checkout, rooms, guests };
+  localStorage.setItem("bookingSearch", JSON.stringify(data));
+  alert("Search preferences saved ✅");
+});
+
+
+</script>
+
+</body>
+</html>

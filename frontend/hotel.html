@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Details - BookMyStay</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+
+<style>
+:root {
+  --gold:#d4af37;
+  --navy:#0a192f;
+  --bg2:#f8f4ef;
+}
+body { background:var(--bg2); font-family:"Poppins",sans-serif; }
+
+.hero img {
+  width:100%; height:300px; object-fit:cover; border-radius:0 0 var(--radius) var(--radius);
+}
+
+.detail-box { max-width:1100px; margin:auto; padding:1.2rem; }
+
+.hotel-name { font-size:2rem; font-weight:800; color:var(--navy); margin-top:1rem; }
+
+.rating-chip {
+  background:var(--gold); padding:0.3rem 0.8rem; border-radius:18px; font-weight:700; font-size:0.85rem; color:var(--navy);
+}
+
+.info-row { display:flex; justify-content:space-between; flex-wrap:wrap; }
+
+.sub { color:#555; font-weight:600; font-size:0.95rem; }
+
+.big-price {
+  font-size:2rem; font-weight:800; color:var(--gold); margin:1rem 0;
+}
+
+.section-card {
+  background:white; border-radius:var(--radius-sm); box-shadow:var(--shadow); padding:1.4rem; margin:2rem 0;
+}
+
+.section-card h2 { font-size:1.25rem; font-weight:800; color:var(--navy); border-left:4px solid var(--gold); padding-left:0.6rem; }
+
+.gallery-scroll { display:flex; gap:0.7rem; overflow-x:auto; padding-bottom:0.4rem; }
+
+.gallery-scroll img { height:150px; border-radius:var(--radius-sm); flex-shrink:0; object-fit:cover; }
+
+.amenities-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-top:1rem;
+}
+
+.amenity { background:var(--navy); color:white; padding:0.8rem; border-radius:10px; text-align:center; font-size:0.85rem; font-weight:700; }
+.amenity i { color:var(--gold); font-size:1.2rem; margin-bottom:0.3rem; }
+
+.attraction { display:flex; align-items:center; gap:0.6rem; font-weight:700; margin:0.4rem 0; font-size:0.95rem; }
+.attraction i { color:var(--gold); }
+
+.book-btn {
+  width:100%; padding:1.2rem; background:var(--gold); color:var(--navy); font-weight:800; border:none; border-radius:12px; font-size:1rem; cursor:pointer; transition:0.3s; text-transform:uppercase; letter-spacing:1px;
+}
+.book-btn:hover { opacity:0.9; transform:translateY(-2px); box-shadow:0 8px 20px rgba(212,175,55,0.4); }
+@media (max-width:768px){ .hero img{height:220px;} .info-row{gap:1rem;} }
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-container">
+    <a class="logo" href="index.html"><i class="fas fa-hotel"></i> BookMyStay</a>
+  </div>
+</nav>
+
+<section class="container">
+  <div class="detail-box">
+
+    <!-- HERO -->
+    <div class="hero"><img id="mainImage"></div>
+
+    <!-- HEADER -->
+    <div class="info-row">
+      <h1 class="hotel-name" id="hotelName"></h1>
+      <div class="rating-chip"><i class="fas fa-star"></i> <span id="hotelRating"></span></div>
+    </div>
+    <p class="sub"><i class="fas fa-map-marker-alt"></i> <span id="hotelLocation"></span> · <span id="hotelReviews"></span> reviews</p>
+    <div class="big-price">₹<span id="hotelPrice"></span>/night</div>
+
+    <!-- PHOTOS -->
+    <div class="section-card">
+      <h2><i class="fas fa-images"></i> Gallery</h2>
+      <div class="gallery-scroll" id="photoGallery"></div>
+    </div>
+
+    <!-- AMENITIES -->
+    <div class="section-card">
+      <h2><i class="fas fa-concierge-bell"></i> Amenities</h2>
+      <div class="amenities-grid" id="amenitiesList"></div>
+    </div>
+
+    <!-- ATTRACTIONS -->
+    <div class="section-card">
+      <h2><i class="fas fa-location-arrow"></i> Nearby Attractions</h2>
+      <div id="attractionList"></div>
+    </div>
+
+    <!-- BOOK BUTTON -->
+    <button class="book-btn" onclick="proceedToBooking()">
+      <i class="fas fa-lock"></i> BOOK & PAY NOW
+    </button>
+
+  </div>
+</section>
+<script src="api.js"></script>
+<script>
+// Load hotel details
+const h = JSON.parse(localStorage.getItem("selectedHotel"));
+
+if(!h) { 
+  alert("No hotel selected!"); 
+  window.location.href="listings.html"; 
+}
+
+// Display hotel details
+document.getElementById("hotelName").textContent = h.name;
+document.getElementById("hotelLocation").textContent = h.location;
+document.getElementById("hotelRating").textContent = h.rating;
+document.getElementById("hotelReviews").textContent = h.reviews;
+document.getElementById("hotelPrice").textContent = h.price.toLocaleString();
+document.getElementById("mainImage").src = h.image;
+
+// Gallery
+document.getElementById("photoGallery").innerHTML =
+  `<img src="${h.image}">` +
+  (h.gallery || []).map(p=>`<img src="${p}">`).join("");
+
+// <div style="text-align: center; margin: 20px;">
+//   <button onclick="toggleAmenities()" style="padding: 15px 30px; background: #0d6e7c; color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer;">
+//     <span id="buttonText">Hide Amenities</span>
+//   </button>
+// </div>
+
+// Amenities
+document.getElementById("amenitiesList").innerHTML =
+  (h.amenities || []).map(a => `
+    <div class="amenity">
+      <i class="fas fa-check-circle"></i><br>${a}
+    </div>`).join("");
+
+// Attractions
+document.getElementById("attractionList").innerHTML =
+  (h.attractions || []).map(a => `
+    <div class="attraction"><i class="fas fa-map-pin"></i> ${a}</div>`).join("");
+
+function proceedToBooking() {
+  if (!h) {
+    alert('Please select a hotel first!');
+    window.location.href = 'listings.html';
+    return;
+  }
+  
+
+  localStorage.setItem('hotel', JSON.stringify(h));
+  localStorage.setItem('room', JSON.stringify({p: h.price}));
+  
+
+  window.location.href = 'booking.html';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+        const hotelsContainer = document.getElementById('hotelsContainer');
+        
+        // Show loading
+        hotelsContainer.innerHTML = '<div class="loading">Loading hotels...</div>';
+
+        try {
+            const response = await hotelsAPI.getAll();
+            
+            if (response.success && response.data.length > 0) {
+                displayHotels(response.data);
+            } else {
+                hotelsContainer.innerHTML = '<p>No hotels available</p>';
+            }
+        } catch (error) {
+            hotelsContainer.innerHTML = `<div class="error">Failed to load hotels: ${error.message}</div>`;
+        }
+    });
+
+    function displayHotels(hotels) {
+        const hotelsContainer = document.getElementById('hotelsContainer');
+        
+        hotelsContainer.innerHTML = hotels.map(hotel => `
+            <div class="hotel-card">
+                ${hotel.images && hotel.images[0] ? 
+                    `<img src="${hotel.images[0]}" alt="${hotel.name}">` : 
+                    '<div class="no-image">No Image</div>'
+                }
+                <h3>${hotel.name}</h3>
+                <p class="location">${hotel.location.city}</p>
+                <p class="description">${hotel.description}</p>
+                <p class="price">₹${hotel.price}/night</p>
+                <div class="rating">⭐ ${hotel.rating}/5</div>
+                <button onclick="viewHotelDetails('${hotel._id}')">View Details</button>
+            </div>
+        `).join('');
+    }
+
+    function viewHotelDetails(hotelId) {
+        window.location.href = `/details.html?id=${hotelId}`;
+    }
+
+    // Search function
+    async function searchHotels() {
+        const city = document.getElementById('searchCity')?.value;
+        const checkIn = document.getElementById('searchCheckIn')?.value;
+        const checkOut = document.getElementById('searchCheckOut')?.value;
+        const guests = document.getElementById('searchGuests')?.value;
+
+        const hotelsContainer = document.getElementById('hotelsContainer');
+        hotelsContainer.innerHTML = '<div class="loading">Searching...</div>';
+
+        try {
+            const response = await hotelsAPI.search(city, checkIn, checkOut, guests);
+            
+            if (response.success && response.data.length > 0) {
+                displayHotels(response.data);
+            } else {
+                hotelsContainer.innerHTML = '<p>No hotels found matching your criteria</p>';
+            }
+        } catch (error) {
+            hotelsContainer.innerHTML = `<div class="error">Search failed: ${error.message}</div>`;
+        }
+    }
+</script>
+<!-- <div style="max-width: 600px; margin: 50px auto; padding: 30px; background: white; border-radius: 20px;">
+  <h2>📝 Send Us Feedback</h2>
+  
+  <form id="myForm" onsubmit="return checkForm(event)">
+    
+    <p><b>Your Name:</b></p>
+    <input type="text" id="userName" required style="width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #ddd;">
+    
+    <p><b>Your Email:</b></p>
+    <input type="email" id="userEmail" required style="width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #ddd;">
+    
+    <p><b>Mobile Number (10 digits):</b></p>
+    <input type="text" id="userMobile" required style="width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #ddd;">
+    
+    <p><b>Message:</b></p>
+    <textarea id="userMessage" required style="width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #ddd;"></textarea>
+    
+    <p id="errorMsg" style="color: red; display: none;"></p>
+    
+    <button type="submit" style="width: 100%; padding: 15px; background: #0d6e7c; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px;">
+      Submit Feedback
+    </button>
+    
+  </form>
+</div> -->
+
+
+</body>
+</html>

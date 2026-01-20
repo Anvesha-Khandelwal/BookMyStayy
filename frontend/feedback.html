@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback - BookMyStay</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #358793;
+  --primary-dark: #2c6b75;
+  --accent: #ffd93d;
+  --bg: #fdf8f2;
+  --text: #2b3a2d;
+  --text-light: #718096;
+  --success: #10b981;
+  --error: #dc2626;
+  --border: #e5e7eb;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Navigation */
+nav {
+  background: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  color: var(--primary);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #358793 0%, #2c6b75 100%);
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  opacity: 0.95;
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: -40px auto 60px;
+  padding: 0 20px;
+}
+
+/* Toggle Button */
+.toggle-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.toggle-btn {
+  padding: 16px 40px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(53, 135, 147, 0.3);
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(53, 135, 147, 0.4);
+}
+
+.toggle-btn i {
+  font-size: 18px;
+}
+
+/* Feedback Card */
+.feedback-card {
+  background: white;
+  border-radius: 24px;
+  padding: 50px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+  transition: all 0.4s ease;
+}
+
+.feedback-card.hidden {
+  display: none;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.card-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.card-subtitle {
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 40px;
+  font-size: 1.05rem;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.form-group label i {
+  color: var(--primary);
+  margin-right: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s;
+  background: #fafafa;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(53, 135, 147, 0.15);
+  background: white;
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Messages */
+.message {
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.3s ease;
+}
+
+.message.show {
+  display: flex;
+}
+
+.message.error {
+  background: #fee2e2;
+  color: var(--error);
+  border: 1px solid #fecaca;
+}
+
+.message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Buttons */
+.btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn {
+  padding: 16px 24px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(53, 135, 147, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(53, 135, 147, 0.4);
+}
+
+.btn-secondary {
+  background: #f97316;
+  color: white;
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Stats Section */
+.stats {
+  margin-top: 40px;
+  padding: 30px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.stats h3 {
+  color: var(--primary);
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.stat-item {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.stat-label {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* Footer */
+footer {
+  background: #2b3a2d;
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+  margin-top: 60px;
+}
+
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .feedback-card {
+    padding: 30px 20px;
+  }
+  
+  .btn-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  .toggle-btn {
+    padding: 14px 30px;
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <i class="fas fa-hotel"></i> BookMyStay
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="listings.html">Hotels</a></li>
+      <li><a href="booking.html">Booking</a></li>
+      <li><a href="feedback.html">Feedback</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero">
+  <h1>📝 We Value Your Feedback</h1>
+  <p>Help us improve your booking experience</p>
+</div>
+
+<!-- Main Container -->
+<div class="container">
+  
+  <!-- ✅ HIDE/SHOW TOGGLE BUTTON (Question 5) -->
+  <div class="toggle-container">
+    <button class="toggle-btn" onclick="toggleFeedbackForm()" id="toggleBtn">
+      <i class="fas fa-eye-slash" id="toggleIcon"></i>
+      <span id="toggleText">Hide Feedback Form</span>
+    </button>
+  </div>
+  
+  <!-- Feedback Form Card -->
+  <div class="feedback-card" id="feedbackCard">
+    
+    <h2 class="card-title">Share Your Experience</h2>
+    <p class="card-subtitle">Your feedback helps us serve you better</p>
+    
+    <!-- Form -->
+    <form id="feedbackForm" onsubmit="return handleSubmit(event)">
+      
+      <!-- Name -->
+      <div class="form-group">
+        <label for="userName">
+          <i class="fas fa-user"></i> Full Name
+        </label>
+        <input type="text" id="userName" class="form-input" 
+               placeholder="Enter your name" required>
+      </div>
+      
+      <!-- Email -->
+      <div class="form-group">
+        <label for="userEmail">
+          <i class="fas fa-envelope"></i> Email Address
+        </label>
+        <input type="email" id="userEmail" class="form-input" 
+               placeholder="your@email.com" required>
+      </div>
+      
+      <!-- Mobile -->
+      <div class="form-group">
+        <label for="userMobile">
+          <i class="fas fa-phone"></i> Mobile Number
+        </label>
+        <input type="text" id="userMobile" class="form-input" 
+               placeholder="10-digit mobile number" 
+               maxlength="10" required>
+      </div>
+      
+      <!-- Message -->
+      <div class="form-group">
+        <label for="userMessage">
+          <i class="fas fa-comment-dots"></i> Your Feedback
+        </label>
+        <textarea id="userMessage" class="form-input" 
+                  placeholder="Share your experience with us..." 
+                  required></textarea>
+      </div>
+      
+      <!-- Error Message -->
+      <div id="errorMessage" class="message error">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorText"></span>
+      </div>
+      
+      <!-- Success Message -->
+      <div id="successMessage" class="message success">
+        <i class="fas fa-check-circle"></i>
+        <span id="successText"></span>
+      </div>
+      
+      <!-- Buttons -->
+      <div class="btn-group">
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <i class="fas fa-paper-plane"></i>
+          Submit Feedback
+        </button>
+        
+        <button type="button" class="btn btn-secondary" onclick="clearForm()">
+          <i class="fas fa-eraser"></i>
+          Clear Form
+        </button>
+      </div>
+      
+    </form>
+    
+  </div>
+  
+  <!-- Stats Section -->
+  <div class="stats">
+    <h3>📊 Feedback Statistics</h3>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number" id="totalFeedbacks">0</div>
+        <div class="stat-label">Total Feedbacks</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="todayFeedbacks">0</div>
+        <div class="stat-label">Today</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4.8</div>
+        <div class="stat-label">Avg Rating</div>
+      </div>
+    </div>
+    
+    <button onclick="viewAllFeedbacks()" 
+            style="margin-top: 20px; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+      <i class="fas fa-list"></i> View All Feedbacks
+    </button>
+  </div>
+  
+</div>
+
+<!-- Footer -->
+<footer>
+  <h3><i class="fas fa-hotel"></i> BookMyStay</h3>
+  <p>Your trusted partner for unforgettable stays worldwide.</p>
+  <p style="margin-top: 15px;">
+    <a href="index.html">Home</a> | 
+    <a href="listings.html">Hotels</a> | 
+    <a href="feedback.html">Feedback</a>
+  </p>
+</footer>
+
+<script>
+// ========================================
+// QUESTION 5: HIDE/SHOW FEEDBACK FORM
+// ========================================
+
+function toggleFeedbackForm() {
+  const card = document.getElementById('feedbackCard');
+  const btn = document.getElementById('toggleBtn');
+  const icon = document.getElementById('toggleIcon');
+  const text = document.getElementById('toggleText');
+  
+  // Check if currently hidden
+  if (card.classList.contains('hidden')) {
+    // Show the form
+    card.classList.remove('hidden');
+    icon.className = 'fas fa-eye-slash';
+    text.textContent = 'Hide Feedback Form';
+    btn.style.background = 'var(--primary)';
+  } else {
+    // Hide the form
+    card.classList.add('hidden');
+    icon.className = 'fas fa-eye';
+    text.textContent = 'Show Feedback Form';
+    btn.style.background = '#10b981';
+  }
+}
+
+// ========================================
+// QUESTION 3: FORM VALIDATION (Email & Mobile)
+// ========================================
+
+function validateEmail(email) {
+  // Check if email has @ and .
+  if (!email.includes('@') || !email.includes('.')) {
+    return false;
+  }
+  
+  // More strict check
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  return emailPattern.test(email);
+}
+
+function validateMobile(mobile) {
+  // Check if exactly 10 digits
+  if (mobile.length !== 10) {
+    return false;
+  }
+  
+  // Check if all are numbers
+  if (isNaN(mobile)) {
+    return false;
+  }
+  
+  // Check if starts with 6, 7, 8, or 9 (Indian format)
+  const firstDigit = mobile.charAt(0);
+  if (firstDigit !== '6' && firstDigit !== '7' && firstDigit !== '8' && firstDigit !== '9') {
+    return false;
+  }
+  
+  return true;
+}
+
+function showError(message) {
+  const errorDiv = document.getElementById('errorMessage');
+  const errorText = document.getElementById('errorText');
+  const successDiv = document.getElementById('successMessage');
+  
+  successDiv.classList.remove('show');
+  errorText.textContent = message;
+  errorDiv.classList.add('show');
+  
+  // Scroll to error
+  errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function showSuccess(message) {
+  const successDiv = document.getElementById('successMessage');
+  const successText = document.getElementById('successText');
+  const errorDiv = document.getElementById('errorMessage');
+  
+  errorDiv.classList.remove('show');
+  successText.textContent = message;
+  successDiv.classList.add('show');
+  
+  // Scroll to success
+  successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ========================================
+// QUESTION 4: CLEAR FORM & THANK YOU MESSAGE
+// ========================================
+
+function clearForm() {
+  // Clear all inputs
+  document.getElementById('feedbackForm').reset();
+  
+  // Hide error message
+  document.getElementById('errorMessage').classList.remove('show');
+  
+  // Show thank you message
+  showSuccess('✅ Thank you! Form has been cleared successfully.');
+  
+  // Hide success message after 3 seconds
+  setTimeout(() => {
+    document.getElementById('successMessage').classList.remove('show');
+  }, 3000);
+}
+
+// ========================================
+// QUESTION 7: SAVE TO BACKEND & DISPLAY SUCCESS
+// ========================================
+
+async function saveFeedbackToBackend(feedbackData) {
+  try {
+    const response = await fetch('http://localhost:5000/api/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(feedbackData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      console.log('✅ Feedback saved to backend:', result);
+      return { success: true, source: 'backend' };
+    } else {
+      throw new Error('Backend returned error');
+    }
+  } catch (error) {
+    console.log('⚠️ Backend not available, saving locally:', error);
+    
+    // Save to localStorage
+    let allFeedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+    allFeedbacks.push(feedbackData);
+    localStorage.setItem('feedbacks', JSON.stringify(allFeedbacks));
+    
+    return { success: true, source: 'local' };
+  }
+}
+
+// ========================================
+// MAIN SUBMIT HANDLER
+// ========================================
+
+async function handleSubmit(event) {
+  event.preventDefault();
+  
+  // Get form values
+  const name = document.getElementById('userName').value.trim();
+  const email = document.getElementById('userEmail').value.trim();
+  const mobile = document.getElementById('userMobile').value.trim();
+  const message = document.getElementById('userMessage').value.trim();
+  
+  // Validate Email
+  if (!validateEmail(email)) {
+    showError('❌ Please enter a valid email address (e.g., user@example.com)');
+    return false;
+  }
+  
+  // Validate Mobile
+  if (!validateMobile(mobile)) {
+    showError('❌ Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9');
+    return false;
+  }
+  
+  // Prepare feedback data
+  const feedbackData = {
+    name: name,
+    email: email,
+    mobile: mobile,
+    message: message,
+    timestamp: new Date().toISOString(),
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString()
+  };
+  
+  // Disable submit button
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  
+  // Save feedback (try backend, fallback to local)
+  const result = await saveFeedbackToBackend(feedbackData);
+  
+  // Show success message
+  if (result.source === 'backend') {
+    showSuccess('✅ Feedback saved to database successfully! Thank you for your valuable feedback!');
+  } else {
+    showSuccess('✅ Feedback submitted successfully! (Saved locally)');
+  }
+  
+  // Reset form
+  document.getElementById('feedbackForm').reset();
+  
+  // Re-enable button
+  submitBtn.disabled = false;
+  submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback';
+  
+  // Update stats
+  updateStats();
+  
+  // Hide success message after 5 seconds
+  setTimeout(() => {
+    document.getElementById('successMessage').classList.remove('show');
+  }, 5000);
+  
+  return false;
+}
+
+// ========================================
+// STATS & VIEWING FEEDBACKS
+// ========================================
+
+function updateStats() {
+  const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+  document.getElementById('totalFeedbacks').textContent = feedbacks.length;
+  
+  // Count today's feedbacks
+  const today = new Date().toLocaleDateString();
+  const todayCount = feedbacks.filter(f => f.date === today).length;
+  document.getElementById('todayFeedbacks').textContent = todayCount;
+}
+
+function viewAllFeedbacks() {
+  const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+  
+  if (feedbacks.length === 0) {
+    alert('📋 No feedbacks yet!');
+    return;
+  }
+  
+  console.log('=== ALL FEEDBACKS ===');
+  console.table(feedbacks);
+  
+  let feedbackText = `📊 Total Feedbacks: ${feedbacks.length}\n\n`;
+  
+  feedbacks.forEach((fb, index) => {
+    feedbackText += `${index + 1}. ${fb.name} (${fb.email})\n`;
+    feedbackText += `   Mobile: ${fb.mobile}\n`;
+    feedbackText += `   Message: ${fb.message}\n`;
+    feedbackText += `   Date: ${fb.date} at ${fb.time}\n\n`;
+  });
+  
+  alert(feedbackText);
+}
+
+// ========================================
+// INITIALIZE ON PAGE LOAD
+// ========================================
+
+window.addEventListener('DOMContentLoaded', function() {
+  updateStats();
+  console.log('✅ Feedback page loaded successfully!');
+  console.log('💡 Click "Hide Feedback Form" button to toggle visibility!');
+});
+</script>
+
+</body>
+</html>

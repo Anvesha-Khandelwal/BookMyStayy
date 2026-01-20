@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Complete Your Booking - BookMyStay</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --accent:#358793;
+  --accent-soft:rgba(79,209,229,0.25);
+  --card-light:rgba(255,255,255,0.78);
+  --bg-page:#fdf8f2;
+  --text-dark:#2b3a2d;
+  --text-sub:#4a5568;
+  --text-muted:#718096;
+  --radius:32px;
+}
+
+body {
+  margin:0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:var(--bg-page);
+  color:var(--text-dark);
+}
+
+nav {
+  background: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.booking-section {
+  padding:2rem 1.2rem 3rem;
+}
+
+.booking-container {
+  max-width:1020px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:2rem;
+}
+
+@media(max-width:900px){
+  .booking-container{
+    grid-template-columns:1fr;
+  }
+}
+
+.booking-form-wrapper h1 {
+  font-size: 2rem;
+  color: #567f63;
+  margin-bottom: 2rem;
+}
+
+.booking-form-wrapper label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.booking-summary-card {
+  background:#fff;
+  padding:1.6rem;
+  border-radius:var(--radius);
+  box-shadow:0 12px 42px rgba(0,0,0,0.06);
+  border:1.8px solid #edf2f7;
+  
+  margin-bottom: 2.5 rem; 
+  top:86px;
+  backdrop-filter:blur(14px);
+  transition:0.3s;
+}
+
+.booking-summary-card:hover{
+  box-shadow:0 18px 56px rgba(0,0,0,0.1);
+}
+
+.booking-summary-title{
+  font-size:1.45rem;
+  font-weight:800;
+  color:#567f63;
+  margin-bottom:1.5rem;
+}
+
+.booking-summary-item {
+  display:flex;
+  justify-content:space-between;
+  padding:0.8rem 0;
+  border-bottom:1.5px dashed var(--accent-soft);
+  font-size:0.92rem;
+  font-weight:700;
+  color:var(--text-dark);
+}
+
+.booking-summary-total{
+  margin-top:1.5rem;
+  padding:1.2rem;
+  border-radius:16px;
+  background:linear-gradient(135deg, #E0F2F7 0%, #F0FDFA 100%);
+  border:2px solid var(--accent);
+  display:flex;
+  justify-content:space-between;
+  font-weight:800;
+  align-items:center;
+  font-size:1.1rem;
+}
+
+#bTotal{
+  color:#358793;
+  font-size:1.6rem;
+}
+
+.payment-card{
+  background:#fff;
+  padding:1.8rem;
+  border-radius:var(--radius);
+  box-shadow:0 12px 42px rgba(0,0,0,0.06);
+  border:1.8px solid #edf2f7;
+  margin-top:2rem;
+  animation:fadeUp 0.6s ease-out;
+}
+
+.payment-title{
+  color:#358793;
+  font-size:1.4rem;
+  font-weight:800;
+  margin:0 0 1.2rem;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+input, select{
+  width:100%;
+  padding:1rem 1.2rem;
+  border-radius:16px;
+  border:2px solid rgba(0,0,0,0.06);
+  font-size:0.92rem;
+  font-weight:500;
+  font-family:inherit;
+  color:var(--text-dark);
+  outline:none;
+  transition:0.25s;
+  margin-bottom:0.9rem;
+  box-shadow:0 4px 16px rgba(0,0,0,0.015);
+}
+
+input:focus, select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+
+/* Payment Method Buttons */
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.payment-method-btn {
+  background: white;
+  border: 2.5px solid #e5e7eb;
+  padding: 1.1rem 0.8rem;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.payment-method-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 6px 18px var(--accent-soft);
+}
+
+.payment-method-btn.selected {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, #E0F2F7 0%, #F0FDFA 100%);
+  color: var(--accent);
+  box-shadow: 0 4px 14px var(--accent-soft);
+}
+
+.payment-method-btn i {
+  font-size: 1.8rem;
+}
+
+.booking-btn-submit{
+  width:100%;
+  background:linear-gradient(135deg, var(--accent) 0%, #2c6b75 100%);
+  color:#fff;
+  border:none;
+  padding:1.2rem;
+  border-radius:14px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 8px 24px rgba(53,135,147,0.35);
+  transition:0.25s;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-size:1.05rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.booking-btn-submit:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(53,135,147,0.45);
+}
+
+.booking-btn-submit:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.offer-buttons {
+  display:flex;
+  gap:0.6rem;
+  margin:1rem 0;
+  flex-wrap:wrap;
+}
+
+.offer-btn {
+  padding:0.7rem 1.1rem;
+  background:#fff3cd;
+  color:#856404;
+  border:2.5px solid #ffc107;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.25s;
+  font-size:0.85rem;
+}
+
+.offer-btn:hover {
+  background:#ffc107;
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(255,193,7,0.3);
+}
+
+.payment-method-helper {
+  font-size:0.8rem;
+  color:var(--text-muted);
+  margin-bottom:1rem;
+  text-align:center;
+  font-weight:600;
+}
+
+/* Success Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  text-align: center;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+  animation: slideUp 0.4s ease;
+}
+
+.success-icon {
+  font-size: 5rem;
+  color: #10B981;
+  margin-bottom: 1.5rem;
+  animation: bounceIn 0.6s ease;
+}
+
+.modal-content h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.8rem;
+}
+
+.modal-content p {
+  color: #6B7280;
+  font-size: 1.05rem;
+  margin-bottom: 1.8rem;
+}
+
+.booking-id {
+  background: linear-gradient(135deg, #E0F2F7 0%, #F0FDFA 100%);
+  padding: 1.2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+.modal-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent) 0%, #2c6b75 100%);
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.modal-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(28px);}
+  to{opacity:1;transform:none;}
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+</style>
+</head>
+
+<body>
+<nav>
+ <div class="logo"> BookMyStay</div>
+ <ul class="nav-links"><li><a href="index.html">Home</a></li></ul>
+</nav>
+
+<section class="booking-section">
+<div class="booking-container">
+
+  <!-- FORM -->
+  <div class="booking-form-wrapper">
+    <h1>Finalize Booking</h1>
+    <form id="bookingForm" onsubmit="submitBook(event)">
+      <label><i class="fa fa-user"></i> Full Name</label>
+      <input type="text" id="fName" placeholder="Enter your name" required />
+
+      <label><i class="fa fa-envelope"></i> Email</label>
+      <input type="email" id="fEmail" placeholder="your@email.com" required />
+
+      <label><i class="fa fa-phone"></i> Phone</label>
+      <input type="tel" id="fPhone" placeholder="+91 1234567890" required />
+
+      <label><i class="fa fa-map-marker-alt"></i> Address</label>
+      <input type="text" id="fAddr" placeholder="Your address" required />
+
+      <label><i class="fa fa-calendar-check"></i> Check In</label>
+      <input type="date" id="cin" required />
+
+      <label><i class="fa fa-calendar-times"></i> Check Out</label>
+      <input type="date" id="cout" required />
+
+      <label><i class="fa fa-users"></i> Number of Rooms</label>
+      <select id="gst" required>
+        <option value="">Select rooms</option>
+        <option value="1">1 Room</option>
+        <option value="2">2 Rooms</option>
+        <option value="3">3 Rooms</option>
+        <option value="4">4 Rooms</option>
+        <option value="5">5 Rooms</option>
+      </select>
+
+      <label>Special Request (Optional)</label>
+      <input type="text" id="req" placeholder="Any special requirements..." />
+
+      <div style="margin:1.5rem 0;">
+        <h3 style="margin-bottom:0.8rem;">🎁 Apply Special Offers</h3>
+        <div class="offer-buttons">
+          <button type="button" class="offer-btn" onclick="applyOffer('percent', 20)">20% OFF</button>
+          <button type="button" class="offer-btn" onclick="applyOffer('flat', 500)">₹500 OFF</button>
+          <button type="button" class="offer-btn" onclick="applyOffer('percent', 30)">30% OFF</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div>
+    <div class="booking-summary-card">
+      <div class="booking-summary-title">Booking Summary</div>
+
+      <div class="booking-summary-item"><span>Hotel</span><span id="bName">-</span></div>
+      <div class="booking-summary-item"><span>Check-In</span><span id="bIn">-</span></div>
+      <div class="booking-summary-item"><span>Check-Out</span><span id="bOut">-</span></div>
+      <div class="booking-summary-item"><span>Nights</span><span id="bN">1</span></div>
+      <div class="booking-summary-item"><span>Rooms</span><span id="bG">-</span></div>
+      <div class="booking-summary-item"><span>Price/Night</span><span id="bFare">₹0</span></div>
+      <div class="booking-summary-item"><span>Subtotal</span><span id="bSubtotal">₹0</span></div>
+      <div class="booking-summary-item" id="discountRow" style="display:none;color:#10B981;">
+        <span>Discount</span><span id="bDiscount">-₹0</span>
+      </div>
+      <div class="booking-summary-item"><span>Tax (12%)</span><span id="bTax">₹0</span></div>
+
+      <div class="booking-summary-total">
+        <span>Total Payable</span>
+        <span id="bTotal">₹0</span>
+      </div>
+    </div>
+
+    <!-- PAYMENT SECTION -->
+    <div class="payment-card">
+      <div class="payment-title">
+        <i class="fas fa-credit-card"></i>
+        Select Payment Method
+      </div>
+      <p class="payment-method-helper">Choose your preferred payment option below</p>
+      
+      <div class="payment-methods">
+        <button type="button" class="payment-method-btn" onclick="selectPaymentMethod(this, 'upi')">
+          <i class="fab fa-google-pay"></i>
+          <span>UPI</span>
+        </button>
+        <button type="button" class="payment-method-btn" onclick="selectPaymentMethod(this, 'card')">
+          <i class="fas fa-credit-card"></i>
+          <span>Card</span>
+        </button>
+        <button type="button" class="payment-method-btn" onclick="selectPaymentMethod(this, 'wallet')">
+          <i class="fas fa-wallet"></i>
+          <span>Wallet</span>
+        </button>
+        <button type="button" class="payment-method-btn" onclick="selectPaymentMethod(this, 'hotel')">
+          <i class="fas fa-hotel"></i>
+          <span>Pay at Hotel</span>
+        </button>
+      </div>
+
+      <button type="button" class="booking-btn-submit" id="payNowBtn" onclick="confirmAndPay()">
+        <i class="fas fa-lock"></i>
+        <span>CONFIRM & PAY NOW</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-content">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h2>Payment Successful!</h2>
+    <p>Your booking has been confirmed</p>
+    <div class="booking-id">
+      Booking ID: <span id="modalBookingId">-</span>
+    </div>
+    <button class="modal-btn" onclick="goToHome()">Go to Home</button>
+  </div>
+</div>
+<script src="api.js"></script>
+<script>
+// Check authentication
+function checkAuth() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const token = localStorage.getItem('authToken');
+  
+  console.log('Checking auth - isLoggedIn:', isLoggedIn, 'token:', token);
+  
+  if (!isLoggedIn || !token) {
+    alert('⚠️ Please login to continue with booking');
+    localStorage.setItem('redirectAfterLogin', window.location.href);
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+// Call auth check
+if (!checkAuth()) {
+  throw new Error('Not authenticated');
+}
+
+// Global variables
+let discountAmount = 0;
+let discountType = null;
+let bookingData = {};
+let selectedPaymentMethod = '';
+
+// Calculate booking summary
+function calc() {
+  try {
+    const h = JSON.parse(localStorage.getItem("hotel") || "{}");
+    const r = JSON.parse(localStorage.getItem("room") || "{}");
+    const fare = r.p || h.price || 2500;
+
+    document.getElementById("bName").textContent = h.name || "Selected Hotel";
+    
+    const cinValue = document.getElementById("cin").value;
+    const coutValue = document.getElementById("cout").value;
+    
+    document.getElementById("bIn").textContent = cinValue || "-";
+    document.getElementById("bOut").textContent = coutValue || "-";
+    document.getElementById("bFare").textContent = "₹" + fare;
+
+    if (cinValue && coutValue) {
+      const cinDate = new Date(cinValue);
+      const coutDate = new Date(coutValue);
+      const n = Math.max(1, Math.ceil((coutDate - cinDate) / (86400000)));
+      const rooms = parseInt(document.getElementById("gst").value) || 1;
+      
+      document.getElementById("bN").textContent = n;
+      document.getElementById("bG").textContent = rooms + " Room" + (rooms > 1 ? "s" : "");
+
+      const subtotal = n * fare * rooms;
+      document.getElementById("bSubtotal").textContent = "₹" + subtotal;
+
+      let finalSubtotal = subtotal;
+      let actualDiscount = 0;
+      if (discountAmount > 0) {
+        if (discountType === 'percent') {
+          actualDiscount = Math.round((subtotal * discountAmount) / 100);
+        } else {
+          actualDiscount = discountAmount;
+        }
+        finalSubtotal = subtotal - actualDiscount;
+        document.getElementById("discountRow").style.display = "flex";
+        document.getElementById("bDiscount").textContent = "-₹" + actualDiscount;
+      } else {
+        document.getElementById("discountRow").style.display = "none";
+      }
+
+      const tax = Math.round(finalSubtotal * 0.12);
+      const total = finalSubtotal + tax;
+      
+      document.getElementById("bTotal").textContent = "₹" + total;
+      document.getElementById("bTax").textContent = "₹" + tax;
+
+      bookingData = {
+        hotelName: h.name || "Selected Hotel",
+        checkIn: cinValue,
+        checkOut: coutValue,
+        nights: n,
+        rooms: rooms,
+        pricePerNight: fare,
+        subtotal: subtotal,
+        discount: actualDiscount,
+        tax: tax,
+        total: total,
+        guestName: document.getElementById("fName").value,
+        guestEmail: document.getElementById("fEmail").value,
+        guestPhone: document.getElementById("fPhone").value,
+        guestAddress: document.getElementById("fAddr").value,
+        specialRequest: document.getElementById("req").value
+      };
+    }
+  } catch (error) {
+    console.error('Error in calc():', error);
+  }
+}
+
+// Select payment method
+function selectPaymentMethod(btn, method) {
+  document.querySelectorAll('.payment-method-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedPaymentMethod = method;
+  console.log('Selected payment method:', method);
+}
+
+// Apply offer
+function applyOffer(type, value) {
+  discountType = type;
+  discountAmount = value;
+  calc();
+  
+  const msg = type === 'percent' ? `${value}% discount applied!` : `₹${value} discount applied!`;
+  alert("✅ " + msg);
+}
+
+// Form submit handler
+function submitBook(e) {
+  e.preventDefault();
+  calc();
+}
+
+// Confirm and Pay
+function confirmAndPay() {
+  try {
+    // Validate form fields
+    const fName = document.getElementById("fName").value.trim();
+    const fEmail = document.getElementById("fEmail").value.trim();
+    const fPhone = document.getElementById("fPhone").value.trim();
+    const fAddr = document.getElementById("fAddr").value.trim();
+    const checkin = document.getElementById("cin").value;
+    const checkout = document.getElementById("cout").value;
+    const rooms = document.getElementById("gst").value;
+
+    if (!fName || !fEmail || !fPhone || !fAddr || !checkin || !checkout || !rooms) {
+      alert("⚠️ Please fill all required fields");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(fEmail)) {
+      alert("⚠️ Please enter a valid email address");
+      return;
+    }
+
+    if (new Date(checkout) <= new Date(checkin)) {
+      alert("⚠️ Check-out date must be after check-in date");
+      return;
+    }
+
+    // Check payment method
+    if (!selectedPaymentMethod) {
+      alert("⚠️ Please select a payment method");
+      return;
+    }
+
+    // Calculate final data
+    calc();
+
+    // Show loading
+    const btn = document.getElementById("payNowBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>PROCESSING PAYMENT...</span>';
+
+    // Simulate payment processing
+    setTimeout(() => {
+      const bookingId = 'BMS' + Date.now();
+      
+      const confirmedBooking = {
+        ...bookingData,
+        bookingId: bookingId,
+        paymentMethod: selectedPaymentMethod,
+        paymentStatus: 'paid',
+        bookingDate: new Date().toISOString(),
+        status: 'confirmed'
+      };
+      
+      // Save booking
+      let bookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+      bookings.push(confirmedBooking);
+      localStorage.setItem('userBookings', JSON.stringify(bookings));
+      
+      console.log('Booking confirmed:', confirmedBooking);
+      
+      // Show success modal
+      document.getElementById('modalBookingId').textContent = bookingId;
+      document.getElementById('successModal').classList.add('active');
+      
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-lock"></i> <span>CONFIRM & PAY NOW</span>';
+    }, 2000);
+
+  } catch (error) {
+    console.error('Error:', error);
+    alert('❌ An error occurred. Please try again.');
+    document.getElementById("payNowBtn").disabled = false;
+    document.getElementById("payNowBtn").innerHTML = '<i class="fas fa-lock"></i> <span>CONFIRM & PAY NOW</span>';
+  }
+}
+
+// Go to home
+function goToHome() {
+  window.location.href = 'index.html';
+}
+
+// Event listeners
+document.getElementById("cin").addEventListener('change', calc);
+document.getElementById("cout").addEventListener('change', calc);
+document.getElementById("gst").addEventListener('change', calc);
+
+// Initialize
+window.addEventListener('DOMContentLoaded', function() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('cin').min = today;
+    document.getElementById('cout').min = today;
+
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user.email) {
+      document.getElementById('fEmail').value = user.email;
+    }
+    if (user.name) {
+      document.getElementById('fName').value = user.name;
+    }
+
+    calc();
+    console.log('Booking page initialized successfully');
+  } catch (error) {
+    console.error('Error during initialization:', error);
+  }
+});
+</script>
+
+</body>
+</html>
