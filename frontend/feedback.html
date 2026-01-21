@@ -401,12 +401,12 @@ footer a {
 <div class="container">
   
   <!-- ✅ HIDE/SHOW TOGGLE BUTTON (Question 5) -->
-  <div class="toggle-container">
+  <!-- <div class="toggle-container">
     <button class="toggle-btn" onclick="toggleFeedbackForm()" id="toggleBtn">
       <i class="fas fa-eye-slash" id="toggleIcon"></i>
       <span id="toggleText">Hide Feedback Form</span>
     </button>
-  </div>
+  </div> -->
   
   <!-- Feedback Form Card -->
   <div class="feedback-card" id="feedbackCard">
@@ -527,27 +527,27 @@ footer a {
 // QUESTION 5: HIDE/SHOW FEEDBACK FORM
 // ========================================
 
-function toggleFeedbackForm() {
-  const card = document.getElementById('feedbackCard');
-  const btn = document.getElementById('toggleBtn');
-  const icon = document.getElementById('toggleIcon');
-  const text = document.getElementById('toggleText');
+// function toggleFeedbackForm() {
+//   const card = document.getElementById('feedbackCard');
+//   const btn = document.getElementById('toggleBtn');
+//   const icon = document.getElementById('toggleIcon');
+//   const text = document.getElementById('toggleText');
   
   // Check if currently hidden
-  if (card.classList.contains('hidden')) {
-    // Show the form
-    card.classList.remove('hidden');
-    icon.className = 'fas fa-eye-slash';
-    text.textContent = 'Hide Feedback Form';
-    btn.style.background = 'var(--primary)';
-  } else {
-    // Hide the form
-    card.classList.add('hidden');
-    icon.className = 'fas fa-eye';
-    text.textContent = 'Show Feedback Form';
-    btn.style.background = '#10b981';
-  }
-}
+//   if (card.classList.contains('hidden')) {
+//     // Show the form
+//     card.classList.remove('hidden');
+//     icon.className = 'fas fa-eye-slash';
+//     text.textContent = 'Hide Feedback Form';
+//     btn.style.background = 'var(--primary)';
+//   } else {
+//     // Hide the form
+//     card.classList.add('hidden');
+//     icon.className = 'fas fa-eye';
+//     text.textContent = 'Show Feedback Form';
+//     btn.style.background = '#10b981';
+//   }
+// }
 
 // ========================================
 // QUESTION 3: FORM VALIDATION (Email & Mobile)
