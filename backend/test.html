@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Feedback</title>
+</head>
+<body>
+  <h1>Test Feedback Form</h1>
+  <form id="testForm">
+    <input type="text" id="name" placeholder="Name" value="John Doe" required>
+    <input type="email" id="email" placeholder="Email" value="john@example.com" required>
+    <input type="text" id="mobile" placeholder="Mobile" value="9876543210" required>
+    <textarea id="message" placeholder="Message" required>Great service!</textarea>
+    <button type="submit">Send Test Feedback</button>
+  </form>
+
+  <script>
+    document.getElementById('testForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const feedbackData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        mobile: document.getElementById('mobile').value,
+        message: document.getElementById('message').value
+      };
+
+      try {
+        const response = await fetch('http://localhost:5001/api/feedback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(feedbackData)
+        });
+
+        const result = await response.json();
+        alert(JSON.stringify(result, null, 2));
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

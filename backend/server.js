@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose'); // ✅ This is Mongoose
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 
@@ -9,115 +10,94 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Connect to MongoDB Atlas using Mongoose
-const connectDB = async () => {
-  try {
-    // Check if connection string exists
-    if (!process.env.MONGODB_URI) {
-      throw new Error('❌ MONGODB_URI not found in .env file');
-    }
-
-    console.log('🔄 Connecting to MongoDB...');
-
-    // This line uses Mongoose to connect to MongoDB Atlas
-    await mongoose.connect(process.env.MONGODB_URI);
-
-    console.log('✅ MongoDB Connected Successfully!');
-    console.log('📦 Database Name:', mongoose.connection.name);
-    console.log('🌍 Host:', mongoose.connection.host);
-  } catch (error) {
-    console.error('❌ MongoDB Connection Failed:', error.message);
-    console.log('\n💡 Check:');
-    console.log('1. Is MONGODB_URI correct in .env?');
-    console.log('2. Did you replace <password> with actual password?');
-    console.log('3. Is your IP whitelisted (0.0.0.0/0)?');
-    console.log('4. Is cluster running on MongoDB Atlas?\n');
-    process.exit(1);
-  }
-};
-
-// Connect to database
-connectDB();
-
-// ✅ Create a Mongoose Schema (optional but recommended)
-const feedbackSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  mobile: { type: String, required: true },
-  message: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
-
-// Create Model
-const Feedback = mongoose.model('Feedback', feedbackSchema);
+// ✅ Ensure feedbacks.txt file exists
+const feedbackFile = path.join(__dirname, 'feedbacks.txt');
+if (!fs.existsSync(feedbackFile)) {
+  fs.writeFileSync(feedbackFile, '================================================================================\n                    BOOKMYSTAY FEEDBACK STORAGE\n================================================================================\n\n');
+}
 
 // Routes
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'BookMyStay API is running!',
-    database: mongoose.connection.readyState === 1 ? 'Connected ✅' : 'Disconnected ❌'
+    message: 'BookMyStay API is running! ✅'
   });
 });
 
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    status: 'healthy',
-    database: {
-      status: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
-      name: mongoose.connection.name,
-      host: mongoose.connection.host
-    }
+    status: 'healthy'
   });
 });
 
-// ✅ Save feedback to MongoDB Atlas using Mongoose
-app.post('/api/feedback', async (req, res) => {
+// ✅ FEEDBACK ENDPOINT - Save feedback directly to text file
+app.post('/api/feedback', (req, res) => {
   try {
     const { name, email, mobile, message } = req.body;
 
-    // Create new feedback document
-    const feedback = new Feedback({
-      name,
-      email,
-      mobile,
-      message
-    });
+    // Validate required fields
+    if (!name || !email || !mobile || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required'
+      });
+    }
 
-    // Save to MongoDB Atlas
-    await feedback.save();
+    // Create feedback entry
+    const timestamp = new Date().toLocaleString();
+    const separator = '================================================================================';
+    const feedbackEntry = `
+${separator}
+Date & Time: ${timestamp}
+Name: ${name}
+Email: ${email}
+Mobile: ${mobile}
+Message: ${message}
+${separator}
 
-    console.log('✅ Feedback saved to MongoDB:', feedback);
+`;
 
-    res.json({
+    // Append to feedbacks.txt
+    fs.appendFileSync(feedbackFile, feedbackEntry, 'utf8');
+
+    console.log('✅ Feedback saved:', { name, email, mobile });
+
+    res.status(201).json({
       success: true,
-      message: 'Feedback saved to database!',
-      data: feedback
+      message: '✅ Feedback submitted successfully!',
+      data: { name, email, mobile, message }
     });
   } catch (error) {
     console.error('❌ Error saving feedback:', error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: 'Error: ' + error.message
     });
   }
 });
 
-// ✅ Get all feedbacks from MongoDB
-app.get('/api/feedback', async (req, res) => {
+// ✅ GET ALL FEEDBACKS - Read from text file
+app.get('/api/feedback', (req, res) => {
   try {
-    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      count: feedbacks.length,
-      data: feedbacks
-    });
+    if (fs.existsSync(feedbackFile)) {
+      const content = fs.readFileSync(feedbackFile, 'utf8');
+      res.json({
+        success: true,
+        message: 'Feedbacks retrieved',
+        file: feedbackFile,
+        content: content
+      });
+    } else {
+      res.json({
+        success: true,
+        message: 'No feedbacks yet'
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: 'Error: ' + error.message
     });
   }
 });
@@ -165,5 +145,6 @@ app.listen(PORT, () => {
   console.log('\n🚀 =====================================');
   console.log(`📡 Server: http://localhost:${PORT}`);
   console.log(`🏥 Health: http://localhost:${PORT}/api/health`);
+  console.log(`📝 Feedbacks saved to: ${feedbackFile}`);
   console.log('🚀 =====================================\n');
 });
